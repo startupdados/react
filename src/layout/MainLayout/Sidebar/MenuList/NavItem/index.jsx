@@ -30,7 +30,7 @@ const NavItem = ({ item, level }) => {
 
   const Icon = item.icon;
   const itemIcon = item?.icon ? (
-    <Icon stroke={1.5} size="1.3rem" />
+    <Icon stroke={1.5} size="1.5rem" />
   ) : (
     <FiberManualRecordIcon
       sx={{
@@ -76,7 +76,7 @@ const NavItem = ({ item, level }) => {
       disabled={item.disabled}
       sx={{
         borderRadius: `${customization.borderRadius}px`,
-        mb: 0.5,
+        mb: 0.3,
         alignItems: 'flex-start',
         backgroundColor: level > 1 ? 'transparent !important' : 'inherit',
         py: level > 1 ? 1 : 1.25,
@@ -85,8 +85,7 @@ const NavItem = ({ item, level }) => {
       selected={customization.isOpen.findIndex((id) => id === item.id) > -1}
       onClick={() => itemHandler(item.id)}
     >
-      <ListItemIcon sx={{ my: 'auto', minWidth: !item?.icon ? 18 : 36 }}>{itemIcon}</ListItemIcon>
-      <ListItemText
+<ListItemIcon sx={{ my: 'auto', minWidth: !item?.icon ? 18 : 36, paddingBottom : '0.1rem' }}>{itemIcon}</ListItemIcon>      <ListItemText
         primary={
           <Typography variant={customization.isOpen.findIndex((id) => id === item.id) > -1 ? 'h5' : 'body1'} color="inherit">
             {item.title}

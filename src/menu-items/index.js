@@ -5,6 +5,7 @@ import other from './other';
 import monitoring from './monitoring';
 import startup from './startup'
 import config from './config'
+import reports from './report'
 
 // ==============================|| MENU ITEMS ||============================== //
 
@@ -14,7 +15,7 @@ import config from './config'
 
 
 const menuItems = {
-  items: [dashboard,monitoring,startup, config]
+  items: [dashboard,reports, monitoring,startup, config]
 };
 
 export default menuItems;
