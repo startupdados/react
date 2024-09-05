@@ -11,6 +11,7 @@ import AmbientLoadChart from './AmbientLoad'
 import TaskList from './TaskList'
 import MemoryUsage from './MemoryUsage'
 import DiskSpace from './DiskSpace'
+import OnlineDays from './OnlineDays'
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
@@ -24,8 +25,11 @@ const DashboardServer = () => {
         <Grid container spacing={gridSpacing}>
 
 
-            <Grid item xs={6}>
+            <Grid item xs={12} md={12} lg={6}>
                 <Grid container spacing={1.5}>
+                  <Grid item xs={12}>
+                    <OnlineDays/>
+                  </Grid>
                     <Grid item xs={12} md={3}>
                         <ServerResourceBarChart title="Server 1" />
                     </Grid>
