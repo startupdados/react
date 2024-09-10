@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from '@mui/material';
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, TableSortLabel, useTheme } from '@mui/material';
 
 // Dados fictícios para a tabela
 const lockSessionData = [
@@ -8,8 +8,48 @@ const lockSessionData = [
   { tempo: '2024-09-03 15:15:27', lockSession: 'Session3', username: 'user3', osuser: 'osuser3', sid: 234, serial: 567, acao: 'UPDATE', seconds: 29 }
 ];
 
+const descendingComparator = (a, b, orderBy) => {
+  if (orderBy === 'tempo') {
+    return new Date(b[orderBy]) - new Date(a[orderBy]);
+  }
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+};
+
+const getComparator = (order, orderBy) => {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+};
+
 const ActiveSessionsInSeconds = () => {
   const theme = useTheme();
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('');
+
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+    const sortedData = lockSessionData.sort(getComparator(order, property));
+    setOrder(isAsc ? 'desc' : 'asc');
+  };
+
+  const headCells = [
+    { id: 'tempo', label: 'TEMPO', width: '12%' },
+    { id: 'lockSession', label: 'LOCK_SESSION', width: '8%' },
+    { id: 'username', label: 'USERNAME', width: '8%' },
+    { id: 'osuser', label: 'OSUSER', width: '12%' },
+    { id: 'sid', label: 'SID', width: '6%' },
+    { id: 'serial', label: 'SERIAL', width: '6%' },
+    { id: 'acao', label: 'AÇÃO', width: '40%' },
+    { id: 'seconds', label: 'SECONDS', width: '12%' }
+  ];
 
   return (
     <Card>
@@ -25,59 +65,62 @@ const ActiveSessionsInSeconds = () => {
           <Table stickyHeader>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ width: '8em', bgcolor: theme.palette.grey[200], color: 'white', border: '1px solid rgba(224, 224, 224, 1)' }}>
-                  <Typography variant="h6">TEMPO</Typography>
-                </TableCell>
-                <TableCell sx={{ width: '1em', bgcolor: theme.palette.grey[200], color: 'white', border: '1px solid rgba(224, 224, 224, 1)' }}>
-                  <Typography variant="h6">LOCK_SESSION</Typography>
-                </TableCell>
-                <TableCell sx={{ width: '3em', bgcolor: theme.palette.grey[200], color: 'white', border: '1px solid rgba(224, 224, 224, 1)' }}>
-                  <Typography variant="h6">USERNAME</Typography>
-                </TableCell>
-                <TableCell sx={{ width: '4em', bgcolor: theme.palette.grey[200], color: 'white', border: '1px solid rgba(224, 224, 224, 1)' }}>
-                  <Typography variant="h6">OSUSER</Typography>
-                </TableCell>
-                <TableCell sx={{ width: '1em', bgcolor: theme.palette.grey[200], color: 'white', border: '1px solid rgba(224, 224, 224, 1)' }}>
-                  <Typography variant="h6">SID</Typography>
-                </TableCell>
-                <TableCell sx={{ width: '1em', bgcolor: theme.palette.grey[200], color: 'white', border: '1px solid rgba(224, 224, 224, 1)' }}>
-                  <Typography variant="h6">SERIAL</Typography>
-                </TableCell>
-                <TableCell sx={{ width: '40em', bgcolor: theme.palette.grey[200], color: 'white', border: '1px solid rgba(224, 224, 224, 1)' }}>
-                  <Typography variant="h6">ACAO</Typography>
-                </TableCell>
-                <TableCell sx={{ width: '2em', bgcolor: theme.palette.grey[200], color: 'white', border: '1px solid rgba(224, 224, 224, 1)' }}>
-                  <Typography variant="h6">SECONDS</Typography>
-                </TableCell>
+                {headCells.map((headCell) => (
+                  <TableCell
+                    key={headCell.id}
+                    align={headCell.id === 'acao' ? 'left' : 'center'}
+                    sortDirection={orderBy === headCell.id ? order : false}
+                    sx={{
+                      backgroundColor: theme.palette.primary.main,
+                      color: 'white',
+                      width: headCell.width,
+                      position: 'relative',
+                    }}
+                  >
+                    <TableSortLabel
+                      active={orderBy === headCell.id}
+                      direction={orderBy === headCell.id ? order : 'asc'}
+                      onClick={(e) => handleRequestSort(e, headCell.id)}
+                      hideSortIcon={false}
+                      sx={{
+                        color: 'white',
+                        position: 'relative',
+                        zIndex: 1,
+                        '&:hover': {
+                          color: 'white',
+                        },
+                        '&.Mui-active': {
+                          color: 'white',
+                        },
+                        '& .MuiTableSortLabel-icon': {
+                          position: 'absolute',
+                          right: '-25px',
+                          zIndex: 2,
+                          opacity: orderBy === headCell.id ? 1 : 0,
+                          color: 'white !important',
+                        },
+                      }}
+                    >
+                      {headCell.label}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {lockSessionData.map((session, index) => (
-                <TableRow key={index}>
-                  <TableCell sx={{ border: '1px solid rgba(224, 224, 224, 1)' }}>
-                    <Typography>{session.tempo}</Typography>
-                  </TableCell>
-                  <TableCell sx={{ border: '1px solid rgba(224, 224, 224, 1)' }}>
-                    <Typography>{session.lockSession}</Typography>
-                  </TableCell>
-                  <TableCell sx={{ border: '1px solid rgba(224, 224, 224, 1)' }}>
-                    <Typography>{session.username}</Typography>
-                  </TableCell>
-                  <TableCell sx={{ border: '1px solid rgba(224, 224, 224, 1)' }}>
-                    <Typography>{session.osuser}</Typography>
-                  </TableCell>
-                  <TableCell sx={{ border: '1px solid rgba(224, 224, 224, 1)' }}>
-                    <Typography>{session.sid}</Typography>
-                  </TableCell>
-                  <TableCell sx={{ border: '1px solid rgba(224, 224, 224, 1)' }}>
-                    <Typography>{session.serial}</Typography>
-                  </TableCell>
-                  <TableCell sx={{ border: '1px solid rgba(224, 224, 224, 1)' }}>
-                    <Typography>{session.acao}</Typography>
-                  </TableCell>
-                  <TableCell sx={{ border: '1px solid rgba(224, 224, 224, 1)' }}>
-                    <Typography>{session.seconds}</Typography>
-                  </TableCell>
+                <TableRow
+                  key={index}
+                  sx={{ backgroundColor: index % 2 === 0 ? 'white' : '#f5f5f5' }}
+                >
+                  <TableCell align="center">{session.tempo}</TableCell>
+                  <TableCell align="center">{session.lockSession}</TableCell>
+                  <TableCell align="center">{session.username}</TableCell>
+                  <TableCell align="center">{session.osuser}</TableCell>
+                  <TableCell align="center">{session.sid}</TableCell>
+                  <TableCell align="center">{session.serial}</TableCell>
+                  <TableCell align="left">{session.acao}</TableCell> {/* Alinhado à esquerda */}
+                  <TableCell align="center">{session.seconds}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -15,18 +15,18 @@ const monitoring = {
   type: 'group',
   children: [
     {
-        id: 'util-shadow',
-        title: 'Moniteração',
+        id: 'erros',
+        title: 'Erros',
         type: 'item',
-        url: '/utils/util-shadow',
+        url: '/monitoring/erros',
         icon: icons.IconEyeExclamation,
         breadcrumbs: false
       },
     {
-      id: 'util-color',
+      id: 'preventive',
       title: 'Preventivo',
       type: 'item',
-      url: '/utils/util-color',
+      url: '/monitoring/preventive',
       icon: icons.IconShieldHalfFilled,
       breadcrumbs: false
     },

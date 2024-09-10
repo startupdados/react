@@ -7,15 +7,26 @@ import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import ProtectedRoute from '../components/ProtectedRoute';
 
+
+// Dashboard Pages
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
 const DashboardServer = Loadable(lazy(() => import('views/dashboard/server')))
 const DashboardDatabase = Loadable(lazy(()=> import('views/dashboard/database')))
+
+//
 const UtilsTypography = Loadable(lazy(() => import('views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
 const UtilsShadow = Loadable(lazy(() => import('views/utilities/Shadow')));
 
+//Monitoring Pages
+const ErrorPage = Loadable(lazy(() => import('views/erros')));
+const PreventivePage = Loadable(lazy(() => import('views/preventive')))
+
+// StartUp Pages
+const TeamPage = Loadable(lazy(() => import('views/team')));
+const ClientsPage = Loadable(lazy(() => import('views/clients')));
 // sample page routing
-const SamplePage = Loadable(lazy(() => import('views/sample-page')));
+// const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -31,6 +42,8 @@ const MainRoutes = {
       path: '/',
       element: <DashboardDefault />
     },
+
+
     // Dashboard pages
     {
       path: 'dashboard',
@@ -60,15 +73,66 @@ const MainRoutes = {
       ]
     },
     
+    //Monitoração
     {
-      path: 'utils',
+      path: 'monitoring',
       children: [
         {
-          path: 'util-typography',
-          element: <UtilsTypography />
+          path: 'preventive',
+          element: <PreventivePage />
         }
       ]
     },
+    {
+      path: 'monitoring',
+      children: [
+        {
+          path: 'erros',
+          element: <ErrorPage />
+        }
+      ]
+    },
+
+    {
+      path: 'monitoring',
+      children: [
+        {
+          path: 'preventive',
+          element: <PreventivePage />
+        }
+      ]
+    },
+
+    //Startup 
+
+
+    {
+      path: 'startup',
+      children: [
+        {
+          path: 'team',
+          element: <TeamPage/>
+        },
+        {
+          path: 'clients',
+          element: <ClientsPage/>
+        },
+        // {
+        //   path: 'clients',
+        //   children: [
+        //     {
+        //       path: '/',
+        //       element: <UtilsTypography />
+              
+        //     }
+        //   ]
+        // },
+      ]
+    },
+
+   
+
+    ///
     {
       path: 'utils',
       children: [
@@ -87,10 +151,10 @@ const MainRoutes = {
         }
       ]
     },
-    {
-      path: 'sample-page',
-      element: <SamplePage />
-    }
+    // {
+    //   path: 'sample-page',
+    //   element: <SamplePage />
+    // }
   ]
 };
 

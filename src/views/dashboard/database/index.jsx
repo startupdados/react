@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 
 // project imports
-import OnlineDays from './OnlineDays'
 import WaitEvents from './WaitEvents'
 import AsmDiskGroup from './AsmDiskGroup'
-import Instances from './Instances'
+import InstanceEvents from './Instances'
 import ActiveSessionsInSeconds from './ActiveSessionsInSeconds'
 import { gridSpacing } from 'store/constant';
-
-
+import ActiveSessionCard from './ActiveSessionCard';
+import OnlinedaysCard from './OnlinedaysCard'
+import RelativeTablespaceSize from './RelativeTablespaceSize'
 // ==============================|| DATABASE DASHBOARD ||============================== //
 
 const DashboardDatabase = () => {
@@ -25,31 +25,74 @@ const DashboardDatabase = () => {
 
 
             <Grid item xs={12} md={12} lg={12}>
+
                 <Grid container spacing={1.5}>
+
                     <Grid item xs={12} md={12}>
-                        <OnlineDays />
+                        <OnlinedaysCard {...{
+                            isLoading: isLoading,
+
+                        }} />
+
                     </Grid>
+
+
+
+
+                    <Grid item xs={6} md={3}>
+                        <ActiveSessionCard
+                            {...{
+                                isLoading: isLoading,
+
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={6} md={3}>
+                        <ActiveSessionCard
+                            {...{
+                                isLoading: isLoading,
+
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={6} md={3}>
+                        <ActiveSessionCard
+                            {...{
+                                isLoading: isLoading,
+
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={6} md={3}>
+                        <ActiveSessionCard
+                            {...{
+                                isLoading: isLoading,
+
+                            }}
+                        />
+                    </Grid>
+
                     <Grid item xs={12} md={12}>
                         <WaitEvents />
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <AsmDiskGroup />
                     </Grid>
-                    <Grid item xs={12} md={3}>
-                        <Instances />
+                    <Grid item xs={12} md={6}>
+                        <InstanceEvents />
                     </Grid>
 
-                    <Grid item xs={12} md={3}>
-                        <Instances />
-                    </Grid>
-
+              
                     <Grid item xs={12} md={12}>
                         <ActiveSessionsInSeconds />
                     </Grid>
-                    
-                    
+
+                    <Grid item xs={12} md={12}>
+                        <RelativeTablespaceSize />
+                    </Grid>
+
                 </Grid>
-                
+
                 {/* <Grid container spacing={1.5}>
                   <Grid item xs={12}>
                     <OnlineDays/>

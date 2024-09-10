@@ -18,7 +18,7 @@ const startup = {
             id: 'equipe',
             title: 'Equipe',
             type: 'item',
-            url: '/utils/util-shadow',
+            url: '/startup/team',
             icon: icons.IconUsers,
             breadcrumbs: false
         },
@@ -26,7 +26,7 @@ const startup = {
             id: 'cliente',
             title: 'Clientes',
             type: 'item',
-            url: '/utils/util-color',
+            url: '/startup/clients',
             icon: icons.IconUsersGroup,
             breadcrumbs: false
         },
