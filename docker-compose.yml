@@ -1,0 +1,9 @@
+services:
+  react-app:
+    container_name: react_app
+    build: .
+    ports:
+      - '8080:8080'
+    restart: always
+    environment:
+      - NODE_ENV=production

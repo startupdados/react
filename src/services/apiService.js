@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 
 class ApiService {
@@ -25,48 +24,48 @@ class ApiService {
     );
   }
 
-  // Método para obter o token de um local storage ou outra fonte
+  // Método para obter o token (pode ser adaptado conforme sua implementação de autenticação)
   async _getToken() {
-    // Aqui você pode substituir pelo método que você utiliza para obter o token
     return localStorage.getItem('token');
   }
 
   // Método para processar respostas de forma unificada
   _processResponse(response) {
-    if (response.status >= 200 && response.status < 300) {
-      return response.data;
-    } else {
-      return Promise.reject(this._handleError(response));
-    }
+    return response.data;
   }
 
   // Método para tratar erros
   _handleError(error) {
     if (error.response) {
-      switch (error.response.status) {
+      const { status, data } = error.response;
+      switch (status) {
+        case 400:
+          return Promise.reject('Bad Request: ' + data.message);
         case 401:
-          return 'Unauthorized: Authentication is required and has failed.';
+          return Promise.reject('Unauthorized: ' + data.message);
         case 403:
-          return 'Forbidden: You do not have permission to access this resource.';
+          return Promise.reject('Forbidden: ' + data.message);
         case 404:
-          return 'Not found: The requested resource was not found.';
+          return Promise.reject('Not Found: ' + data.message);
         case 500:
-          return error.response.data;
+          return Promise.reject('Server Error: ' + data.message);
         default:
-          return `Failed to load data with status code: ${error.response.status}`;
+          return Promise.reject(`Error ${status}: ${data.message}`);
       }
+    } else if (error.request) {
+      return Promise.reject('No response received from server.');
     } else {
-      return 'Network Error: Please check your internet connection.';
+      return Promise.reject('Error in setting up the request: ' + error.message);
     }
   }
 
   // Método GET
-  async get(endpoint) {
+  async get(endpoint, params = {}) {
     try {
-      const response = await this.api.get(endpoint);
+      const response = await this.api.get(endpoint, { params });
       return this._processResponse(response);
     } catch (error) {
-      throw this._handleError(error);
+      throw await this._handleError(error);
     }
   }
 
@@ -76,7 +75,7 @@ class ApiService {
       const response = await this.api.post(endpoint, data);
       return this._processResponse(response);
     } catch (error) {
-      throw this._handleError(error);
+      throw await this._handleError(error);
     }
   }
 
@@ -86,7 +85,7 @@ class ApiService {
       const response = await this.api.put(endpoint, data);
       return this._processResponse(response);
     } catch (error) {
-      throw this._handleError(error);
+      throw await this._handleError(error);
     }
   }
 
@@ -96,7 +95,7 @@ class ApiService {
       const response = await this.api.patch(endpoint, data);
       return this._processResponse(response);
     } catch (error) {
-      throw this._handleError(error);
+      throw await this._handleError(error);
     }
   }
 
@@ -106,11 +105,12 @@ class ApiService {
       const response = await this.api.delete(endpoint);
       return this._processResponse(response);
     } catch (error) {
-      throw this._handleError(error);
+      throw await this._handleError(error);
     }
   }
 }
 
+// Instância única do ApiService
 const apiService = new ApiService(import.meta.env.VITE_BASE_URL);
 
 export default apiService;

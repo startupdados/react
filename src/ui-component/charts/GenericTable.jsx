@@ -16,8 +16,8 @@ import { styled } from '@mui/system';
 // Função auxiliar para ordenar dados
 const getComparator = (order, orderBy) => {
   return (a, b) => {
-    const aValue = a[orderBy];
-    const bValue = b[orderBy];
+    const aValue = a[orderBy] ?? ''; // Trata valores nulos ou indefinidos
+    const bValue = b[orderBy] ?? '';
 
     if (typeof aValue === 'number' && typeof bValue === 'number') {
       return order === 'asc' ? aValue - bValue : bValue - aValue;
@@ -61,7 +61,7 @@ const GenericTable = ({ data, customColumns = [], title }) => {
   }));
 
   const getMaxWidth = (key) => {
-    const maxLength = Math.max(...data.map((item) => String(item[key]).length), key.length);
+    const maxLength = Math.max(...data.map((item) => String(item[key] || '').length), key.length);
     return `${maxLength + 1}ch`;
   };
 
@@ -93,20 +93,7 @@ const GenericTable = ({ data, customColumns = [], title }) => {
                       active={orderBy === column}
                       direction={orderBy === column ? order : 'asc'}
                       onClick={() => handleSortRequest(column)}
-                      sx={{
-                        color: 'white',  // Mantém o texto branco
-                        '& .MuiTableSortLabel-icon': {
-                          color: 'white !important',  // Ícone de ordenação branco
-                          position: 'absolute',  // Ícone flutua ao lado
-                          right: '-22 px',  // Ajusta o ícone para flutuar 15px ao lado
-                        },
-                        '&:hover': {
-                          color: 'white',  // Mantém o texto branco ao passar o mouse
-                        },
-                        '&.Mui-active': {
-                          color: 'white',  // Mantém o texto branco ao ser ativo
-                        },
-                      }}
+                      hideSortIcon // Remove o ícone de sorting
                     >
                       {column}
                     </TableSortLabel>
@@ -122,7 +109,7 @@ const GenericTable = ({ data, customColumns = [], title }) => {
                 <StyledTableRow key={rowIndex} index={rowIndex}>
                   {Object.keys(row).map((column) => (
                     <TableCell key={column} align="center">
-                      {row[column]}
+                      {row[column] ?? '—'} {/* Exibe '—' se o valor for nulo ou indefinido */}
                     </TableCell>
                   ))}
                   {customColumns.map((customColumn) => (

@@ -7,10 +7,10 @@ import ClientCard from './ClientCard';
 const ClientsList = ({ clients }) => {
   const [filter, setFilter] = useState('');
 
-  // Função para filtrar os clientes
+  // Função para filtrar os clientes com base na nova estrutura
   const filteredClients = clients.filter((client) =>
-    client.fullName.toLowerCase().includes(filter.toLowerCase()) ||
-    client.initials.toLowerCase().includes(filter.toLowerCase())
+    client.fullName?.toLowerCase().includes(filter.toLowerCase()) ||
+    client.initials?.toLowerCase().includes(filter.toLowerCase())
   );
 
   return (
@@ -37,12 +37,12 @@ const ClientsList = ({ clients }) => {
         sx={{
           display: 'flex',
           flexWrap: 'wrap',
-          justifyContent: { xs: 'center', md: 'center', lg: 'center' },
+          justifyContent: 'center', // Centraliza os cartões
           gap: 2, // Aumenta a distância entre os cards
         }}
       >
-        {filteredClients.map((client, index) => (
-          <ClientCard key={index} client={client} />
+        {filteredClients.map((client) => (
+          <ClientCard key={client.id} client={client} /> // Garante que a chave seja única
         ))}
       </Box>
     </Box>

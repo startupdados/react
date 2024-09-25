@@ -1,29 +1,21 @@
 import { useState, useRef, useEffect } from 'react';
-
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
-import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
-import InputAdornment from '@mui/material/InputAdornment';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import Stack from '@mui/material/Stack';
-import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
+import authService from 'services/authService';
 
 // third-party
 import PerfectScrollbar from 'react-perfect-scrollbar';
@@ -31,31 +23,38 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
-import UpgradePlanCard from './UpgradePlanCard';
 import User1 from 'assets/images/users/user-round.svg';
 
 // assets
-import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons-react';
+import { IconLogout, IconSettings, } from '@tabler/icons-react';
 
 // ==============================|| PROFILE MENU ||============================== //
+
+const getGreeting = () => {
+  const currentHour = new Date().getHours();
+  if (currentHour >= 5 && currentHour < 12) {
+    return 'Bom Dia';
+  } else if (currentHour >= 12 && currentHour < 18) {
+    return 'Boa Tarde';
+  } else {
+    return 'Boa Noite';
+  }
+};
+
 
 const ProfileSection = () => {
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
   const navigate = useNavigate();
-
-  const [sdm, setSdm] = useState(true);
-  const [value, setValue] = useState('');
-  const [notification, setNotification] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [open, setOpen] = useState(false);
   /**
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
    * */
   const anchorRef = useRef(null);
-  const handleLogout = async () => {
-    console.log('Logout');
-  };
+
+
+  const userInfo = authService.getUserInfo();
 
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
@@ -85,6 +84,29 @@ const ProfileSection = () => {
     prevOpen.current = open;
   }, [open]);
 
+
+  const handleLogout = () => {
+    authService.logout();
+    setOpen(false); // Fecha o menu após o logout
+  };
+
+
+  const [photoUrl, setPhotoUrl] = useState(null);
+
+  useEffect(() => {
+    if (userInfo.photo && (userInfo.photo instanceof Blob || userInfo.photo instanceof File)) {
+      // Converte o Blob ou File em uma URL
+      const url = URL.createObjectURL(userInfo.photo);
+      setPhotoUrl(url);
+  
+      // Limpa a URL quando o componente desmontar ou quando a foto mudar
+      return () => URL.revokeObjectURL(url);
+    } else {
+      // Se não for Blob ou File, assume que é uma string (Base64 ou URL) e usa diretamente
+      setPhotoUrl(userInfo.photo);
+    }
+  }, [userInfo.photo]);
+  
   return (
     <>
       <Chip
@@ -109,17 +131,17 @@ const ProfileSection = () => {
         }}
         icon={
           <Avatar
-            src={User1}
-            sx={{
-              ...theme.typography.mediumAvatar,
-              margin: '8px 0 8px 8px !important',
-              cursor: 'pointer'
-            }}
-            ref={anchorRef}
-            aria-controls={open ? 'menu-list-grow' : undefined}
-            aria-haspopup="true"
-            color="inherit"
-          />
+          src={photoUrl}
+          sx={{
+            ...theme.typography.mediumAvatar,
+            margin: '8px 0 8px 8px !important',
+            cursor: 'pointer'
+          }}
+          ref={anchorRef}
+          aria-controls={open ? 'menu-list-grow' : undefined}
+          aria-haspopup="true"
+          color="inherit"
+        />
         }
         label={<IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}
         variant="outlined"
@@ -155,18 +177,18 @@ const ProfileSection = () => {
                   <Box sx={{ p: 2, pb: 0 }}>
                     <Stack>
                       <Stack direction="row" spacing={0.5} alignItems="center">
-                        <Typography variant="h4">Good Morning,</Typography>
+                        <Typography variant="h4">{getGreeting()},</Typography>
                         <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                          Johne Doe
+                          {userInfo.name + " " + userInfo.lastname}
                         </Typography>
                       </Stack>
-                      <Typography variant="subtitle2">Project Admin</Typography>
+                      <Typography variant="subtitle2">{userInfo.email}</Typography>
                     </Stack>
-                  
+
                   </Box>
                   <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
                     <Box sx={{ p: 2, pt: 0 }}>
-                  
+
                       <List
                         component="nav"
                         sx={{
@@ -183,7 +205,7 @@ const ProfileSection = () => {
                           }
                         }}
                       >
-                        <ListItemButton
+                        {/* <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 0}
                           onClick={(event) => handleListItemClick(event, 0, '#')}
@@ -192,7 +214,7 @@ const ProfileSection = () => {
                             <IconSettings stroke={1.5} size="1.3rem" />
                           </ListItemIcon>
                           <ListItemText primary={<Typography variant="body2">Account Settings</Typography>} />
-                        </ListItemButton>
+                        </ListItemButton> */}
                         <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 4}
@@ -203,6 +225,7 @@ const ProfileSection = () => {
                           </ListItemIcon>
                           <ListItemText primary={<Typography variant="body2">Logout</Typography>} />
                         </ListItemButton>
+
                       </List>
                     </Box>
                   </PerfectScrollbar>

@@ -1,79 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Typography, CircularProgress, Box } from '@mui/material';
 import ClientsList from './ClientsList';
-import { Button, Grid ,Typography} from '@mui/material';
-// Exemplo de dados dos clientes
-const clients = [
-  {
-    initials: 'ABC',
-    fullName: 'ABC Corp',
-    qtdServidores: 15,
-    dataRegistro: '01/01/2021',
-    dataUltimaAtualizacao: '12/12/2023',
-    status: 'ATIVADO',
-  },
-  {
-    initials: 'XYZ',
-    fullName: 'XYZ Industries',
-    qtdServidores: 10,
-    dataRegistro: '03/05/2020',
-    dataUltimaAtualizacao: '01/09/2023',
-    status: 'DESATIVADO',
-  },{
-    initials: 'ABC',
-    fullName: 'ABC Corp',
-    qtdServidores: 15,
-    dataRegistro: '01/01/2021',
-    dataUltimaAtualizacao: '12/12/2023',
-    status: 'ATIVADO',
-  },
-  {
-    initials: 'XYZ',
-    fullName: 'XYZ Industries',
-    qtdServidores: 10,
-    dataRegistro: '03/05/2020',
-    dataUltimaAtualizacao: '01/09/2023',
-    status: 'DESATIVADO',
-  },{
-    initials: 'ABC',
-    fullName: 'ABC Corp',
-    qtdServidores: 15,
-    dataRegistro: '01/01/2021',
-    dataUltimaAtualizacao: '12/12/2023',
-    status: 'ATIVADO',
-  },
-  {
-    initials: 'XYZ',
-    fullName: 'XYZ Industries',
-    qtdServidores: 10,
-    dataRegistro: '03/05/2020',
-    dataUltimaAtualizacao: '01/09/2023',
-    status: 'DESATIVADO',
-  },{
-    initials: 'ABC',
-    fullName: 'ABC Corp',
-    qtdServidores: 15,
-    dataRegistro: '01/01/2021',
-    dataUltimaAtualizacao: '12/12/2023',
-    status: 'ATIVADO',
-  },
-  {
-    initials: 'XYZ',
-    fullName: 'XYZ Industries',
-    qtdServidores: 10,
-    dataRegistro: '03/05/2020',
-    dataUltimaAtualizacao: '01/09/2023',
-    status: 'DESATIVADO',
-  },
-];
+import clientService from 'services/clientService'; // Certifique-se de importar o clientService corretamente
 
 const ClientsPage = () => {
+  const [clients, setClients] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Função para buscar os clientes
+  const fetchClients = async () => {
+    setLoading(true); // Inicia o carregamento
+    try {
+      const response = await clientService.getAllClients();
+      
+      // Mapeia os dados para o formato esperado pelos cartões de clientes
+      const formattedClients = response.map((client) => ({
+        id: client.id,
+        initials: client.sigla,
+        fullName: client.nome,
+        qtdServidores: client.quantidadeServidores,
+        dataRegistro: new Date(client.dataRegistro).toLocaleDateString('pt-BR'),
+        dataUltimaAtualizacao: new Date(client.dataSituacaoAtualizada).toLocaleDateString('pt-BR'),
+        status: client.status // Alterado de 'status' para 'situacao'
+      }));
+
+      setClients(formattedClients);
+    } catch (error) {
+      console.error('Erro ao buscar clientes:', error);
+    } finally {
+      setLoading(false); // Finaliza o carregamento
+    }
+  };
+
+  // useEffect para buscar os clientes ao montar o componente
+  useEffect(() => {
+    fetchClients();
+  }, []);
+
   return (
     <div>
-              <Typography variant="h1" sx={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '20px' }}>
+      <Typography variant="h1" sx={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '20px' }}>
         Clientes
       </Typography>
 
-      <ClientsList clients={clients} />
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <ClientsList clients={clients} />
+      )}
     </div>
   );
 };

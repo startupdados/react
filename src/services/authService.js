@@ -1,50 +1,80 @@
-// src/services/authService.js
-
 import apiService from './apiService';
-import AuthModel from '../models/authModel';
+import { jwtDecode } from 'jwt-decode';
 
-// Função para salvar tokens e outros dados no local storage
-const saveTokens = (token, name, email, id, role) => {
-  localStorage.setItem('token', token);
-  localStorage.setItem('name', name);
-  localStorage.setItem('email', email);
-  localStorage.setItem('userId', id);
-  localStorage.setItem('role', role);
-};
+class AuthService {
+  // Método para realizar o login
+  async login(email, password) {
+    try {
+      // Faz a requisição POST para o endpoint de login
+      const response = await apiService.post('/auth/login', { email, password });
 
-// Função para remover tokens e outros dados do local storage
-const logout = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('name');
-  localStorage.removeItem('email');
-  localStorage.removeItem('userId');
-  localStorage.removeItem('role');
-};
+      // Extrai o token da resposta
+      const { accessToken } = response;
 
-// Função para fazer login
-const login = async (dto) => {
-  try {
-    const response = await apiService.post('/auth', dto);
-    if (response && response.accessToken) {
-      saveTokens(
-        response.accessToken,
-        response.user.name,
-        response.user.email,
-        response.user.id,
-        response.user.role
-      );
-      return AuthModel.fromJson(response);
+      // Armazena o token no localStorage
+      localStorage.setItem('token', accessToken);
+
+      return true;
+    } catch (error) {
+      // Trata o erro conforme necessário
+      throw error;
     }
-    return null;
-  } catch (error) {
-    console.error('Failed to login:', error);
-    throw error;
   }
-};
 
-const AuthService = {
-  login,
-  logout,
-};
+  // Método para realizar o logout
+  logout() {
+    // Remove o token do localStorage
+    localStorage.removeItem('token');
 
-export default AuthService;
+    // Remove quaisquer outros dados do usuário
+    localStorage.removeItem('userInfo');
+    sessionStorage.clear();
+
+    // Se estiver usando um estado global, limpe-o aqui
+    // Por exemplo: this.userStore.clearUserData();
+
+    // Redireciona para a página de login
+    window.location.href = '/login';
+  }
+
+  // Método para verificar se o usuário está autenticado
+  isAuthenticated() {
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+
+    try {
+      const { exp } = jwtDecode(token);
+      if (exp * 1000 < Date.now()) {
+        this.logout();
+        return false;
+      }
+      return true;
+    } catch (error) {
+      this.logout();
+      return false;
+    }
+  }
+
+  // Método para obter informações do usuário a partir do token
+  getUserInfo() {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+
+    try {
+      const decodedToken = jwtDecode(token);
+      return {
+        name: decodedToken.name,
+        lastname: decodedToken.lastname,
+        email: decodedToken.email,
+        role: decodedToken.role,
+        id: decodedToken.id,
+        photo: decodedToken.photo,
+      };
+    } catch (error) {
+      this.logout();
+      return null;
+    }
+  }
+}
+
+export default new AuthService();

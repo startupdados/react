@@ -23,11 +23,16 @@ const ClientInitialsBox = styled(Box)(({ theme }) => ({
 }));
 
 const ClientCard = ({ client }) => {
-  const { initials, fullName, qtdServidores, dataRegistro, dataUltimaAtualizacao, status } = client;
+  const { id, initials, fullName, qtdServidores, dataRegistro, dataUltimaAtualizacao, status } = client;
+  console.log("Card")
+  console.log(client)
 
   return (
     <StyledCard>
       <ClientInitialsBox>
+        <Typography variant="h6" gutterBottom color="secondary.light">
+          ID: {id}
+        </Typography>
         <Typography variant="h3" gutterBottom color="secondary.light">
           {initials}
         </Typography>
@@ -65,7 +70,7 @@ const ClientCard = ({ client }) => {
             sx={{
               backgroundColor: status === 'ATIVADO' ? 'success.dark' : 'warning.dark',
               color: 'white',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
             }}
           />
         </Box>

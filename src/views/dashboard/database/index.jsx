@@ -10,7 +10,7 @@ import InstanceEvents from './Instances'
 import ActiveSessionsInSeconds from './ActiveSessionsInSeconds'
 import { gridSpacing } from 'store/constant';
 import ActiveSessionCard from './ActiveSessionCard';
-import OnlinedaysCard from './OnlinedaysCard'
+// import OnlinedaysCard from './OnlinedaysCard'
 import RelativeTablespaceSize from './RelativeTablespaceSize'
 // ==============================|| DATABASE DASHBOARD ||============================== //
 
@@ -29,10 +29,10 @@ const DashboardDatabase = () => {
                 <Grid container spacing={1.5}>
 
                     <Grid item xs={12} md={12}>
-                        <OnlinedaysCard {...{
+                        {/* <OnlinedaysCard {...{
                             isLoading: isLoading,
 
-                        }} />
+                        }} /> */}
 
                     </Grid>
 

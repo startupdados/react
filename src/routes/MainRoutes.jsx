@@ -19,8 +19,8 @@ const UtilsColor = Loadable(lazy(() => import('views/utilities/Color')));
 const UtilsShadow = Loadable(lazy(() => import('views/utilities/Shadow')));
 
 //Monitoring Pages
-const ErrorPage = Loadable(lazy(() => import('views/erros')));
-const PreventivePage = Loadable(lazy(() => import('views/preventive')))
+const ErrorPage = Loadable(lazy(() => import('views/monitoring/erros')));
+const PreventivePage = Loadable(lazy(() => import('views/monitoring/preventive')))
 
 // StartUp Pages
 const TeamPage = Loadable(lazy(() => import('views/team')));

@@ -1,3 +1,24 @@
+## Docker
+- docker-compose up --build para criar a imagem
+
+## DockerHub
+
+Para dar commit em uma nova imagem tem que fazer o seguinte:
+- docker tag {id da imagem} startupnet/startup_dockers:{tagname}
+- docker push startupnet/startup_dockers:{tagname}
+
+Para dar pull na imagem
+- docker pull startupnet/startup_dockers:{tagname}
+
+Para criar o container
+- docker run -d --name nome_do_container startupnet/startup_dockers:{tagname}
+
+A {tagname} por padrão iremos usar nestjs-V{versão}, exemplo "react-V1.0"
+
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
